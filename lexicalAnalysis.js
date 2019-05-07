@@ -58,8 +58,11 @@ class Lexical {
 
                     // Se o estado final é ID, adiciona o token e o lexema na tabela de simbolos 
                     // (somente se o token e o lexema não estiverem presentes da tabela de simbolos)
-                    if (final == 'ID' && !symbolTable[buffer]) {
-                        symbolTable[buffer] = {token: final, lexeme: buffer, type: null}
+                    if (final == 'ID') {
+                        if(!symbolTable[buffer]) {
+                            symbolTable[buffer] = {token: final, lexeme: buffer, type: null}
+                        }
+                        return symbolTable[buffer]
                     }
     
                     return {token: final, lexeme: buffer, type: null}
