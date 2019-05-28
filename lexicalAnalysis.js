@@ -12,9 +12,10 @@ class Lexical {
         this._currentCharacter = 0                                                                  // Iterador de leitura do arquivo de leitura
         this._finalStates = {1: 'Num', 3: 'Num', 7:'Literal', 8:'ID', 10:'Comentario',              // Estados Finais do DFA
                              11:'OPR', 12:'RCB', 13:'OPR', 14:'OPR', 15:'OPM', 
-                             16:'AB_P', 17:'FC_P', 18:'PT_V', 19:'EOF', 20:'ERROR'}
+                             16:'AB_P', 17:'FC_P', 18:'PT_V', 19:'EOF'}
         this._line = 1                                                                              // Linha do arquivo de leitura
         this._column = 1                                                                            // Coluna do arquivo de leitura
+        
     }
 
     getToken() {
