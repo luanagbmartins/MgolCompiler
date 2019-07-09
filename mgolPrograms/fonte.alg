@@ -6,9 +6,10 @@ inicio
         C real;
     varfim;
 
-    escreva "Digite B";
+   
+    escreva "Digite B: ";
     leia B;
-    escreva "Digite A:";
+    escreva "Digite A: ";
     leia A;
     se(B>2)
     entao
@@ -30,4 +31,5 @@ inicio
     escreva C;
     escreva "\n";
     escreva A;
+
 fim
