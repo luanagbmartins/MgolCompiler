@@ -9,26 +9,31 @@ class Lexical {
         this._states = csvConverter.fieldDelimiter(',').getJsonFromCsv('./transitionTable.csv')     // Pega tabela de transicao do DFA
         this._currentState = 0                                                                      // Estado atual
         this._currentCharacter = 0                                                                  // Iterador de leitura do arquivo de leitura
-        this._finalStates = { 1: 'Num', 4: 'Num',5:'Num', 9:'Num', 11:'Literal', 12:'ID',             // Estados Finais do DFA
+        this._finalStates = { 1: 'Num', 4: 'Num',5:'Num', 9:'Num', 11:'Literal', 12:'ID',           // Estados Finais do DFA
                              14:'Comentario', 15:'OPR', 16:'RCB', 17:'OPR', 18:'OPR', 
                              19:'OPM', 20:'AB_P', 21:'FC_P', 22:'PT_V', 23:'EOF'}
         this._line = 1                                                                              // Linha do arquivo de leitura
-        this._column = 1 
-        this._prevLine = 1
-        this._prevColumn = 1                                                                        // Coluna do arquivo de leitura
-        this._wasFinal = false
+        this._column = 1                                                                            // Coluna do arquivo de leitura
+        this._prevLine = 1                                                                          // Linha do arquivo de leitura do token anterior
+        this._prevColumn = 1                                                                        // Coluna do arquivo de leitura do token anterior
+        this._wasFinal = false                                                                      // Flag de verificação de estado final
 
     }
 
     getLine() {
+
         return this._prevLine
+
     }
 
     getColumn() {
+
         return this._prevColumn
+
     }
 
     increment(character) {
+
         this._currentCharacter ++
 
         if (character == '\n') {
@@ -74,28 +79,38 @@ class Lexical {
                     // Se o estado final é ID, adiciona o token e o lexema na tabela de simbolos 
                     // (somente se o token e o lexema não estiverem presentes da tabela de simbolos)
                     if (final == 'ID') {
-                        if(!symbolTable[buffer]) {
-                            symbolTable[buffer] = tuple
-                        }
+
+                        if(!symbolTable[buffer]) symbolTable[buffer] = tuple
                         return symbolTable[buffer]
+
                     }
 
                     if (final == 'OPM') {
+
                         tuple.type = buffer
+
                     } else if (final == 'OPR') {
-                        if (buffer == '<>') {
-                            tuple.type = '!='
-                        } else if (buffer == '=') {
-                            tuple.type = '=='
-                        } else tuple.type = buffer
+
+                        if (buffer == '<>')         tuple.type = '!='
+                        else if (buffer == '=')     tuple.type = '=='
+                        else                        tuple.type = buffer
+
                     } else if (final == 'RCB') {
+
                         tuple.type = '='
+
                     } else if (final == 'Literal') {
+
                         tuple.type = final
+
                     } else if (this._currentState == 1 || this._currentState == 5) {
+
                         tuple.type = 'int'
+
                     } else if (this._currentState == 4 || this._currentState == 9) {
+
                         tuple.type = 'double'
+
                     }
     
                     return tuple
@@ -107,8 +122,10 @@ class Lexical {
 
                     this.increment(character)
                     buffer = buffer + char
+
                     if (this.errorRoutine(char, buffer) == 'EOF') 
                         return {token: 'EOF', lexeme: 'eof', type: null}  
+
                     else return 'ERROR'
 
                 } 
@@ -118,10 +135,13 @@ class Lexical {
             // Se há uma transição, continua a leitura de caracteres
             // this._currentCharacter é incrementado para continuar a análise léxica
             else {
+
                 if (this._wasFinal) {
+
                     this._prevLine = this._line
                     this._prevColumn = this._column
                     this._wasFinal = false
+
                 }
 
                 this.increment(character)
@@ -150,7 +170,8 @@ class Lexical {
                 tempState = this._states[this._currentState][character.toLowerCase()]
             else tempState = 10
 
-        } else if (this._currentState != 10 && this._currentState != 13) {  
+        } else if (this._currentState != 10 && this._currentState != 13) { 
+
             try {
                 tempState = this._states[this._currentState][character.toLowerCase()]
             } catch(e) {
@@ -178,10 +199,13 @@ class Lexical {
             console.log('LexicalError: final de arquivo inesperado')
 
             if(this._currentState == 10) {
+
                 console.log('Aspas (") foram abertas e não foram fechadas')
 
             } else if(this._currentState == 13) {
+
                 console.log('Um abre-chave ({) foi aberto e não foi fechado')
+
             }
                 
             console.log('*****')
@@ -219,10 +243,12 @@ class Lexical {
 module.exports = Lexical
 
 function openFile (fileName) {
+
     try {
       var data = fs.readFileSync(fileName, 'utf8')
     } catch(e) {
       console.log('\x1b[31mError ao ler ' + fileName + ' :\n\x1b[0m', e.stack)
     }
     return data
+    
   }

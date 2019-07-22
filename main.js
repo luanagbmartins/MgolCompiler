@@ -1,8 +1,10 @@
 const syn = require('./syntaxAnalysis')
 
+
 console.log('\x1b[36m---    Mgol Compiler   ---\x1b[0m\n')
 
 const args = process.argv
+// Verifica se o nome do arquivo foi incluido
 if (!args[2]) {
     console.log('Please include the path to the program')
     return
